@@ -1,0 +1,136 @@
+/* Layout fixes: pipeline learning layout, phone layout, exam-only parts, pipeline label cleanup. Loaded after base.css. */
+/* Keep the live five-stage diagram prominent and place cycle/control tables after it. */
+body.pipeline-mode #pipeline-view[data-panel="diagram"] .pipeline-svg-wrap {
+  display: block !important;
+  max-height: none !important;
+  overflow: auto !important;
+  justify-content: flex-start !important;
+}
+body.pipeline-mode #pipeline-view[data-panel="diagram"] .pipeline-svg {
+  display: block !important;
+  width: max(100%, 1500px) !important;
+  min-width: 1500px !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: none !important;
+  flex: none !important;
+  margin: 0 auto !important;
+}
+body.pipeline-mode #pipeline-view[data-panel="diagram"] .pipe-cycle-timeline {
+  order: 2;
+  margin-top: 12px;
+}
+body.pipeline-mode #pipeline-view[data-panel="diagram"] .pipeline-svg-wrap {
+  order: 1;
+}
+body.pipeline-mode #pipeline-view[data-panel="diagram"] .flowtop {
+  order: 0;
+}
+body.pipeline-mode #pipeline-view[data-panel="diagram"] .pipe-wire.active {
+  stroke: #69efc0 !important;
+  stroke-width: 5 !important;
+  stroke-dasharray: 8 5 !important;
+  animation: dash 0.75s linear infinite !important;
+  filter: drop-shadow(0 0 7px #69efc0) !important;
+}
+@media (max-width: 900px) {
+  body.pipeline-mode #pipeline-view[data-panel="diagram"] .pipeline-svg {
+    width: 1500px !important;
+    margin: 0 !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.pipeline-mode #pipeline-view[data-panel="diagram"] .pipe-wire.active {
+    animation: none !important;
+  }
+}
+
+/* Mobile fix: grid columns may shrink below their content; wide parts scroll inside their own wrappers */
+.layout > *,
+.dictionary-layout > *,
+.pipeline-lower > *,
+.maincol,
+.sidecol,
+.maincol > *,
+.sidecol > *,
+.pipeline-page > *,
+.pipeline-lower > * > * {
+  min-width: 0;
+}
+#program-trace,
+#program-schedule {
+  overflow-x: auto;
+  max-width: 100%;
+}
+:has(> #large-table),
+:has(> #control-table-top),
+:has(> .pipe-cycle-table),
+:has(> .sequence-table),
+:has(> .program-table) {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.program-table bdi,
+.program-table code,
+.program-table small {
+  unicode-bidi: isolate;
+}
+.program-table td small {
+  display: block;
+  margin-top: 3px;
+}
+.program-status.warning {
+  color: #ffcb69;
+}
+#program-schedule,
+.pipe-cycle-scroll,
+.sequence-scroll {
+  direction: ltr;
+}
+@media (max-width: 900px) {
+  #pipe-value-list.pipe-value-list {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  }
+}
+
+/* Exam-specific parts (srl1, F1–F6) belong to the srl1 lesson, not to the regular MIPS datapath */
+svg.diagram .exam-only {
+  display: none;
+}
+#svg-alu-values,
+#svg-memory-value,
+.svg-data {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+/* Pipeline diagram: keep one label per fact. Duplicated badges and the control-bundle row are shown in the panels under the diagram instead. */
+#pipeline-svg #pipeline-flush-logic,
+#pipeline-svg #pipe-control-unit-detail,
+#pipeline-svg .pipe-card-line,
+#pipeline-svg #pipe-hazard-wire,
+#pipeline-svg .pipe-badge,
+#pipeline-svg .pipe-badge-text,
+#pipeline-svg #pipe-control-map,
+#pipeline-svg .pipe-route-tag.control {
+  display: none !important;
+}
+
+/* First screen: a compact intro so the datapath diagram is visible without scrolling. */
+@media (min-width: 621px) {
+  .hero { padding-block: 0; margin-bottom: 14px; min-height: 0; }
+  .hero h1 { font-size: clamp(26px, 2.6vw, 34px); line-height: 1.2; margin: 4px 0 6px; }
+  .hero h1 br { display: none; }
+  .hero p { font-size: 14px; margin: 0; }
+  .hero .factory { font-size: 40px; }
+}
+details.wire-note > summary { cursor: pointer; list-style: none; }
+details.wire-note > summary::-webkit-details-marker { display: none; }
+details.wire-note > summary b::after { content: ' ▾'; color: var(--muted); font-weight: 400; }
+details.wire-note[open] > summary b::after { content: ' ▴'; }
+details.wire-note[open] > summary { margin-bottom: 6px; }
+.flowcard .movie-readout { margin-top: 12px; }
+
+/* Desktop: the whole five-stage pipeline fits the card width (no sideways scroll to reach WB). */
+@media (min-width: 901px) {
+  body.pipeline-mode #pipeline-view[data-panel="diagram"] .pipeline-svg { width: 100% !important; min-width: 0 !important; height: auto !important; }
+}

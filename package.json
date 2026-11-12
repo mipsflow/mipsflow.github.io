@@ -1,0 +1,19 @@
+{
+  "name": "mipsflow",
+  "description": "Interactive Hebrew learning simulator for the MIPS single-cycle and five-stage pipelined datapath.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/core.test.mjs tests/pipeline.test.mjs",
+    "test:e2e": "node --test tests/e2e/smoke.e2e.test.mjs",
+    "test:all": "npm test && npm run test:e2e"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}
