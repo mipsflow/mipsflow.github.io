@@ -76,7 +76,7 @@ document
 document.getElementById('route-toggle').onclick = () => {
   state.showAllRoutes = !state.showAllRoutes;
   const b = document.getElementById('route-toggle');
-  b.textContent = state.showAllRoutes ? 'הצג רק את התחנה הנוכחית' : 'הצג את כל הפסים';
+  b.textContent = state.showAllRoutes ? 'הצג רק את השלב הנוכחי' : 'הצג את כל הפסים';
   b.setAttribute('aria-pressed', String(state.showAllRoutes));
   render();
 };

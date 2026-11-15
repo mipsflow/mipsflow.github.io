@@ -624,7 +624,7 @@ export function bindDiagramExplanations() {
           F4: 'F4 מסמן נתון שיוצא מקובץ האוגרים ומגיע לכניסת ה־ALU. ב־add, למשל, Read Data 1=7 נכנס לכניסה A.',
           F5: 'F5 מסמן את תוצאת ה־ALU כשהיא משמשת כתובת בזיכרון הנתונים.',
           F6: 'F6 מסמן את מסלול חישוב כתובת ה־branch: מזיזים את ה־offset שמאלה שתי סיביות ומחברים ל־PC+4.',
-        }[f] || 'החוט מחבר בין שתי תחנות בתרשים.';
+        }[f] || 'החוט מחבר בין שני רכיבים בתרשים.';
       calc =
         f === 'F2'
           ? `בפקודת ${d.name}: ${live.data}. MemWrite=${d.controls.MemWrite ?? 'X'} קובע אם הערך נשמר בזיכרון.`
@@ -643,17 +643,17 @@ export function bindDiagramExplanations() {
         body = muxInfo.body;
         calc = muxInfo.calc;
       } else if (t.includes('alu'))
-        body = `ה־ALU הוא המחשבון של המעבד. הוא מקבל שני מספרים ובוחר חיבור, חיסור או השוואה לפי ALU Control. ${live.alu}`;
+        body = `ה־ALU מבצע את החישוב. הוא מקבל שני אופרנדים ובוחר חיבור, חיסור או השוואה לפי ALU Control. ${live.alu}`;
       else if (t.includes('mux') || t === 'regdst' || t === 'alusrc' || t === 'memtoreg')
         body = `זהו בורר: הוא מקבל כמה אפשרויות ומעביר אחת לפי אות הבחירה.`;
       else if (t.includes('register') || t.includes('אוגר'))
-        body = `קובץ האוגרים הוא קבוצת מגירות קטנות ומהירות. קוראים ממנו ${live.data}; כתובת היעד היא ${live.rd}.`;
+        body = `קובץ האוגרים מכיל 32 אוגרים של 32 ביט. קוראים ממנו ${live.data}; כתובת היעד היא ${live.rd}.`;
       else if (t.includes('memory') || t.includes('זיכרון'))
-        body = `זהו מחסן הנתונים. בפקודה ${d.name} הערך הוא ${live.mem}.`;
+        body = `זהו זיכרון הנתונים. בפקודה ${d.name} הערך הוא ${live.mem}.`;
       else if (t.includes('sign extend'))
         body = `Sign Extend מרחיב את המספר הקטן שבפקודה ל־32 ביטים. בדוגמה: ${live.imm}.`;
       else if (t.includes('control'))
-        body = 'יחידת הבקרה מפענחת את הפקודה ומפעילה את המתגים שמנתבים את הנתונים.';
+        body = 'יחידת הבקרה מפענחת את ה־opcode וקובעת את אותות הבקרה שמנתבים את הנתונים.';
       else if (t === 'zero?')
         body = `Zero נדלק כשחיסור ה־ALU נותן 0. ב־beq זה אומר ששני הערכים שווים. עכשיו: ${live.alu}.`;
       else body = `${label} הוא חלק במסלול הנתונים של המעבד. ${live.alu}`;
@@ -695,7 +695,7 @@ export function bindDiagramExplanations() {
       const name = g.dataset.unit || 'רכיב';
       openInfo(
         name,
-        `התחנה הזו משתתפת בשלב ${stageHeb[activeStep()[2]] || 'העיבוד'}. עקבי אחרי החצים הירוקים כדי לראות את הערך שנכנס ואת הערך שיוצא.`,
+        `הרכיב הזה משתתף בשלב ${stageHeb[activeStep()[2]] || 'העיבוד'}. עקבי אחרי החצים הירוקים כדי לראות את הערך שנכנס ואת הערך שיוצא.`,
         `בפקודה ${d.name} הערכים הרלוונטיים: ${live.data} · ${live.alu}`,
       );
     });
@@ -711,7 +711,7 @@ export function showSignalInfo(k) {
 }
 export function showEncodingInfo(field, value) {
   const help = {
-    opcode: 'מזהה את משפחת הפקודה. יחידת הבקרה קוראת אותו ומדליקה את המתגים המתאימים.',
+    opcode: 'מזהה את משפחת הפקודה. יחידת הבקרה קוראת אותו וקובעת את אותות הבקרה.',
     rs: 'מספר האוגר הראשון שקוראים. למשל 01001 הוא 9, כלומר R9 או $t1.',
     rt: 'מספר האוגר השני או אוגר היעד, לפי סוג הפקודה.',
     rd: 'אוגר היעד בפקודת R-type, כשהתוצאה חוזרת מקובץ האוגרים.',
@@ -806,7 +806,7 @@ export function packetPlan(name, stage) {
           ]
         : name === 'sw'
           ? [
-              [10, '42 למחסן'],
+              [10, '42 → M[104]'],
               [15, 'כתובת 104'],
             ]
           : [],
@@ -858,7 +858,7 @@ export function updateMovieReadout(d, s) {
   document.getElementById('movie-control').textContent = trace[4];
   document
     .getElementById('movie-stage')
-    .setAttribute('aria-label', `תחנה ${state.step + 1} מתוך ${d.steps.length}`);
+    .setAttribute('aria-label', `שלב ${state.step + 1} מתוך ${d.steps.length}`);
 }
 export function animateStage(name, stage) {
   const ns = 'http://www.w3.org/2000/svg';
@@ -972,7 +972,7 @@ export function render() {
   document.getElementById('diagram-explanation-text').textContent = s[1];
   const explanationTrace = flowTrace[d.name].find((r) => r[0] === s[2]) || flowTrace[d.name][0];
   document.getElementById('diagram-explanation-values').innerHTML =
-    `<strong>הנתונים והבקרה בתחנה:</strong> ${explanationTrace[2]} · ${explanationTrace[3]} · קווי בקרה: ${explanationTrace[4]}`;
+    `<strong>הנתונים והבקרה בשלב:</strong> ${explanationTrace[2]} · ${explanationTrace[3]} · קווי בקרה: ${explanationTrace[4]}`;
   document.getElementById('instruction-picker').innerHTML = instructions
     .map(
       (x, i) =>
@@ -1029,7 +1029,7 @@ export function render() {
   document.getElementById('progress').style.width = ((state.step + 1) / d.steps.length) * 100 + '%';
   document.getElementById('prev').disabled = state.step === 0;
   document.getElementById('next').textContent =
-    state.step === d.steps.length - 1 ? 'סיימנו — פקודה הבאה ←' : 'התחנה הבאה ←';
+    state.step === d.steps.length - 1 ? 'סיימנו — פקודה הבאה ←' : 'השלב הבא ←';
   document.getElementById('nextInst').textContent =
     'הפקודה הבאה: ' + instructions[(state.inst + 1) % instructions.length].name + ' ⟵';
   document.getElementById('analogy').innerHTML = '<b>דמיינו:</b> ' + analogyFor(d.name, state.step);
@@ -1063,7 +1063,7 @@ export function render() {
           {
             ALUOp1: 'הביט העליון בוחר יחד עם ALUOp0 את סוג החישוב.',
             ALUOp0: 'שני ביטי ALUOp אומרים ל־ALU Control איזו פעולה להכין.',
-            Jump: 'המתג בוחר אם כתובת הקפיצה תגיע ל־PC.',
+            Jump: 'האות קובע אם כתובת הקפיצה תגיע ל־PC.',
           }[k] ||
           'הקו לא משנה בפקודה הזו.';
       return `<tr><td><button class="signal-name-btn" data-signal="${k}">${k}</button></td><td style="color:var(--muted)">${reason.split('—')[0].split('.')[0]}</td><td class="signal-val ${v === 1 ? 'on' : ''}" data-signal="${k}" role="button" tabindex="0">${v}</td></tr>`;
@@ -1105,11 +1105,11 @@ export function render() {
     };
   });
   document.getElementById('signal-why').innerHTML =
-    '<p class="signal-key-note">1 = מתג דולק · 0 = מתג כבוי · X = הבחירה לא משנה בפקודה הזו. לחצי על שם או ערך של קו בקרה להסבר.</p><strong>למה דווקא הערכים האלה?</strong><ul>' +
+    '<p class="signal-key-note">1 = האות פעיל · 0 = לא פעיל · X = הערך לא משפיע בפקודה הזו. לחצי על שם או ערך של קו בקרה להסבר.</p><strong>למה דווקא הערכים האלה?</strong><ul>' +
     keys
       .map(
         (k) =>
-          `<li><code>${k} = ${d.controls[k] ?? 'X'}</code> — ${d.why[k] || { ALUOp1: 'הביט העליון בקוד ALUOp בוחר יחד עם הביט התחתון את סוג הפעולה.', ALUOp0: 'הביט התחתון בקוד ALUOp משלים את בחירת הפעולה ל־ALU Control.', Jump: 'המתג בוחר אם הכתובת שמגיעה ל־PC היא כתובת קפיצה ישירה.' }[k] || 'הקו לא משנה במסלול של הפקודה הזו.'}</li>`,
+          `<li><code>${k} = ${d.controls[k] ?? 'X'}</code> — ${d.why[k] || { ALUOp1: 'הביט העליון בקוד ALUOp בוחר יחד עם הביט התחתון את סוג הפעולה.', ALUOp0: 'הביט התחתון בקוד ALUOp משלים את בחירת הפעולה ל־ALU Control.', Jump: 'האות קובע אם הכתובת שמגיעה ל־PC היא כתובת קפיצה ישירה.' }[k] || 'הקו לא משנה במסלול של הפקודה הזו.'}</li>`,
       )
       .join('') +
     '</ul>';
@@ -1124,49 +1124,49 @@ export function render() {
 export function analogyFor(name, n) {
   let a = {
     j: [
-      'הפתק אומר במפורש לאיזה צומת לנסוע.',
-      'מנהל העבודה מזהה שזו הוראת קפיצה.',
-      'מרכיבים את כתובת היעד מהפתק ומחלק מהכתובת הנוכחית.',
-      'בורר המסלול מכוון את ה־PC ליעד.',
-      'המעבד ממשיך לעבוד מהכתובת החדשה.',
+      'הפקודה נשלפת מזיכרון הפקודות לפי PC.',
+      'יחידת הבקרה מזהה opcode של j ומעלה Jump=1.',
+      'כתובת היעד נבנית מ־26 הביטים של הפקודה ומ־4 הביטים העליונים של PC+4.',
+      'בורר ה־PC בוחר את כתובת הקפיצה.',
+      'במחזור הבא הביצוע ממשיך מכתובת היעד.',
     ],
     add: [
-      'הפתק יוצא מהמדף.',
-      'שתי מגירות נפתחות ומוציאות מספרים.',
-      'שני עובדים מביאים את המספרים למחשבון.',
-      'המחשבון מחבר כמויות.',
-      'הסכום נרשם במגירה חדשה.',
+      'הפקודה נשלפת מזיכרון הפקודות לפי PC.',
+      'קובץ האוגרים קורא את rs ואת rt.',
+      'שני הערכים מגיעים לכניסות ה־ALU.',
+      'ה־ALU מחבר את שני האופרנדים.',
+      'התוצאה נכתבת לאוגר rd.',
     ],
     addi: [
-      'הפתק יוצא מהמדף.',
-      'מגירה אחת נפתחת.',
-      'את המספר הקטן מעתיקים לטופס בגודל הנכון.',
-      'המחשבון מחבר מספר מהמגירה ומספר מהפתק.',
-      'התוצאה מונחת במגירה.',
+      'הפקודה נשלפת מזיכרון הפקודות לפי PC.',
+      'קובץ האוגרים קורא את rs.',
+      'הקבוע בן 16 הביטים מורחב עם סימן ל־32 ביט.',
+      'ה־ALU מחבר את rs ואת הקבוע (ALUSrc=1).',
+      'התוצאה נכתבת לאוגר rt.',
     ],
     lw: [
-      'המשאית מקבלת פתק איסוף.',
-      'לוקחים כתובת בסיס מהמגירה.',
-      'מכינים את ההיסט בגודל המתאים.',
-      'מחשבים את מספר המדף במחסן.',
-      'המחסן מוציא חבילה.',
-      'החבילה נכנסת למגירה.',
+      'הפקודה נשלפת מזיכרון הפקודות לפי PC.',
+      'קובץ האוגרים קורא את כתובת הבסיס מ־rs.',
+      'ההיסט מורחב עם סימן ל־32 ביט.',
+      'ה־ALU מחשב כתובת = בסיס + היסט.',
+      'זיכרון הנתונים קורא את המילה בכתובת (MemRead=1).',
+      'הערך שנקרא נכתב לאוגר rt (MemtoReg=1).',
     ],
     sw: [
-      'מתקבל פתק משלוח.',
-      'מוציאים חבילה וכתובת בסיס.',
-      'מתאימים את ההיסט לתבנית.',
-      'מחשבים את מדף היעד.',
-      'מניחים את החבילה במחסן.',
+      'הפקודה נשלפת מזיכרון הפקודות לפי PC.',
+      'קובץ האוגרים קורא את הבסיס מ־rs ואת הנתון מ־rt.',
+      'ההיסט מורחב עם סימן ל־32 ביט.',
+      'ה־ALU מחשב כתובת = בסיס + היסט.',
+      'הערך של rt נכתב לזיכרון הנתונים (MemWrite=1).',
     ],
     beq: [
-      'הצומת מקבל הוראת בדיקה.',
-      'שני עובדים מציגים את המספרים שלהם.',
-      'המחשבון בודק אם ההפרש אפס.',
-      'רמזור בוחר אם לקחת את הפנייה.',
-      'הדרך הבאה נקבעת לפי התשובה.',
+      'הפקודה נשלפת מזיכרון הפקודות לפי PC.',
+      'קובץ האוגרים קורא את rs ואת rt.',
+      'ה־ALU מחסר את הערכים ובודק אם התוצאה אפס (Zero).',
+      'אם Branch=1 וגם Zero=1, הבורר בוחר את כתובת הענף.',
+      'ה־PC הבא הוא PC+4 או כתובת הענף, לפי תוצאת ההשוואה.',
     ],
-  }[name] || ['הפקודה נשלפת ומתקדמת בין תחנות המעבד.'];
+  }[name] || ['הפקודה מתקדמת בין שלבי המעבד.'];
   return a[Math.min(n, a.length - 1)];
 }
 export function setInst(n) {

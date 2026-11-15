@@ -253,7 +253,7 @@ export function pipeWireDetail(index, signal) {
     [
       'שדות rs ו־rt → Register File',
       rs + ' · ' + rt,
-      'החוטים נושאים מספרי אוגרים מתוך הפקודה; קובץ האוגרים משתמש בהם כדי לבחור מגירות.',
+      'החוטים נושאים מספרי אוגרים מתוך הפקודה; קובץ האוגרים משתמש בהם כדי לבחור אילו אוגרים לקרוא ולכתוב.',
     ],
     ['Read Data 1/2 → ID/EX', rs + ' · ' + rt, 'הערכים שנקראו נשמרים ברגיסטר ID/EX עד שלב EX.'],
     ['Sign Extend → ID/EX', imm, 'המספר המיידי מורחב ל־32 ביט ונשמר יחד עם שאר נתוני הפקודה.'],
@@ -272,7 +272,7 @@ export function pipeWireDetail(index, signal) {
       n === 'sw' ? 'WriteData=42' : `ReadData2=${rt} · MemWrite=${c.MemWrite}`,
       'החוט נושא את Read Data 2. הזיכרון משתמש בערך רק כאשר MemWrite=1.',
     ],
-    ['Data Memory → MEM/WB', mem, 'רק lw מפעילה MemRead ומקבלת נתון מהמחסן.'],
+    ['Data Memory → MEM/WB', mem, 'רק lw מפעילה MemRead ומקבלת נתון מזיכרון הנתונים.'],
     ['MEM/WB → MemtoReg MUX', wb, 'הבורר מקבל ALUResult וגם ReadData; MemtoReg בוחר את הערך שיוחזר.'],
     [
       'MemtoReg MUX → Register File',
@@ -730,7 +730,7 @@ export function renderPipeline() {
       ],
     },
     alu: {
-      html: '<b>סיכון נתונים RAW · התוצאה כבר מוכנה:</b> פקודה קודמת כתבה ל־R16, והפקודה הבאה קוראת אותו לפני שהערך הגיע לקובץ האוגרים. Forwarding מעתיק את התוצאה ישירות מ־EX/MEM אל קלט ה־ALU. כמו להעביר פתק ישר לעובד הבא, בלי להחזיר אותו למגירה.',
+      html: '<b>סיכון נתונים RAW · התוצאה כבר מוכנה:</b> פקודה קודמת כתבה ל־R16, והפקודה הבאה קוראת אותו לפני שהערך הגיע לקובץ האוגרים. Forwarding מעתיק את התוצאה ישירות מ־EX/MEM אל קלט ה־ALU. כך אין צורך לחכות לכתיבה לקובץ האוגרים.',
       fa: '10',
       fb: '00',
       stall: '0',

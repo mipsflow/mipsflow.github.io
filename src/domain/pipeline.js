@@ -27,7 +27,7 @@ export const pipeTrace = {
     ],
     [
       'התוצאה עוברת דרך EX/MEM; הזיכרון לא נדרש.',
-      '12 ממשיך ברגיסטר EX/MEM. MemRead ו־MemWrite כבויים, לכן לא קוראים ולא כותבים בזיכרון.',
+      '12 ממשיך ברגיסטר EX/MEM. MemRead ו־MemWrite שווים 0, לכן לא קוראים ולא כותבים בזיכרון.',
       'ALUResult=12 · Data Memory לא פעיל',
       'MemRead=0 · MemWrite=0',
     ],
@@ -91,7 +91,7 @@ export const pipeTrace = {
     ],
     [
       'זיכרון הנתונים קורא בכתובת 104.',
-      'MemRead=1 גורם למחסן להוציא M[104]=42. הנתון נרשם ב־MEM/WB.',
+      'MemRead=1 גורם לזיכרון הנתונים להחזיר M[104]=42. הנתון נרשם ב־MEM/WB.',
       'Address=104 · ReadData=42',
       'MemRead=1 · MemWrite=0',
     ],
@@ -116,7 +116,7 @@ export const pipeTrace = {
       'MemWrite=1 · RegWrite=0',
     ],
     [
-      'ה־ALU מחשב את כתובת המחסן.',
+      'ה־ALU מחשב את כתובת הגישה לזיכרון.',
       '100+4=104. כתובת היעד והנתון 42 עוברים יחד לרגיסטר EX/MEM.',
       'Address=104 · WriteData=42',
       'ALUSrc=1 · ALUControl=0010',

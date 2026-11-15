@@ -1,7 +1,7 @@
 // Feedback button and optional Google Analytics, driven by src/site.config.js.
 import { siteConfig } from '../site.config.js';
 
-for (const link of document.querySelectorAll('#open-feedback, #open-feedback-mobile'))
+for (const link of document.querySelectorAll('#open-feedback, #open-feedback-mobile, #footer-feedback'))
   link.href = siteConfig.feedbackUrl || siteConfig.issuesUrl;
 
 const gaId = siteConfig.googleAnalyticsId;

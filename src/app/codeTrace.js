@@ -453,7 +453,7 @@ const $ = (id) => document.getElementById(id),
         tr.querySelectorAll('td').forEach((td, ci) => {
           if (ci >= 1 && ci <= 5) {
             td.style.cursor = 'pointer';
-            td.title = 'לחצי כדי לבחור תחנה בתרשים';
+            td.title = 'לחצי כדי לבחור שלב בתרשים';
             td.addEventListener('click', () => {
               document.querySelector('[data-pipe-panel=diagram]')?.click();
               const op = tr.querySelector('code')?.textContent.trim().split(/\s+/)[0].toLowerCase(),
